@@ -16,11 +16,13 @@ implementation 'nurisezgin.com.rxtrash:rxtrash:1.0.0'
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(data -> ..., throwable -> ...);
 
-    RxTrash.getInstance().add(tag, d);
+    RxTrash.getInstance()
+        .add(tag, d);
 ```
 * Dispose All
 ```java
-    RxTrash.getInstance().clear(new Filter.AllFilter());
+    RxTrash.getInstance()
+        .clear(new Filter.AllFilter());
 ```
 * Dispose With Tag Name
 ```java
