@@ -7,7 +7,7 @@ import java.util.Map;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
-public class RxTrash {
+public final class RxTrash {
 
     Map<String, Disposable> disposableMap = new LinkedHashMap<>();
     CompositeDisposable disposables = new CompositeDisposable();
