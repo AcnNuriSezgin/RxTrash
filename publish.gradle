@@ -42,7 +42,7 @@ bintray {
         publish = true
         version {
             name = VERSION
-            desc = 'OkHttp Cookie Interceptor'
+            desc = 'RxTrash dispose with tag name'
             gpg {
                 sign = true
                 passphrase = getPassPhrase()
