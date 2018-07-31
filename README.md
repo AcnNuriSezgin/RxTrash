@@ -4,7 +4,7 @@ Keep disposables with custom tag names. You can dispose each disposable or dispo
 ## Prerequisites
 First, dependency must be added to build.gradle file.
 ```groovy
-implementation 'nurisezgin.com.rxtrash:rxtrash:1.0.0'
+implementation 'nurisezgin.com.rxtrash:rxtrash:1.0.1'
 ```
 
 ## How To Use
