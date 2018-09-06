@@ -4,7 +4,7 @@ apply from: '../publish.gradle'
 android {
     compileSdkVersion 27
     defaultConfig {
-        minSdkVersion 22
+        minSdkVersion 14
         targetSdkVersion 27
         versionCode 1
         versionName VERSION_NAME
