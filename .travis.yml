@@ -12,7 +12,7 @@ install: ./gradlew clean assemble --stacktrace
 
 script: ./gradlew check --stacktrace
 
-after_success: ./gradlew install bintrayUpload
+after_success: ./gradlew bintrayUpload
 
 notifications:
   email: false
