@@ -1,7 +1,9 @@
 package nurisezgin.com.rxtrash;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.reactivex.disposables.CompositeDisposable;
@@ -9,7 +11,7 @@ import io.reactivex.disposables.Disposable;
 
 public final class RxTrash {
 
-    Map<String, Disposable> disposableMap = new LinkedHashMap<>();
+    Map<String, List<Disposable>> disposableMap = new LinkedHashMap<>();
     CompositeDisposable disposables = new CompositeDisposable();
 
     private RxTrash() { }
@@ -25,8 +27,13 @@ public final class RxTrash {
 
     public RxTrash add(String tag, Disposable d) {
         synchronized (disposableMap) {
-            disposableMap.put(tag, d);
+            if (!disposableMap.containsKey(tag)) {
+                disposableMap.put(tag, new ArrayList<Disposable>());
+            }
+
+            disposableMap.get(tag).add(d);
         }
+
         return this;
     }
 
@@ -37,23 +44,31 @@ public final class RxTrash {
 
     public void clear(Filter filter) {
         synchronized (disposableMap) {
-            for (Iterator<Map.Entry<String, Disposable>> it = disposableMap.entrySet().iterator();
+            for (Iterator<Map.Entry<String, List<Disposable>>> it = disposableMap.entrySet().iterator();
                  it.hasNext(); ) {
 
-                Map.Entry<String, Disposable> entry = it.next();
+                Map.Entry<String, List<Disposable>> entry = it.next();
 
                 String key = entry.getKey();
-                Disposable disposable = entry.getValue();
+                List<Disposable> disposables = entry.getValue();
 
-                if (shouldRemoveUnusedDisposable(disposable)) {
-                    it.remove();
-                } else {
-                    boolean isFiltered = filter.apply(key, disposable);
+                for (Iterator<Disposable> itDisposable = disposables.iterator(); itDisposable.hasNext(); ) {
+                    final Disposable next = itDisposable.next();
 
-                    if (isFiltered) {
-                        disposable.dispose();
-                        it.remove();
+                    if (shouldRemoveUnusedDisposable(next)) {
+                        itDisposable.remove();
+                    } else {
+                        boolean isFiltered = filter.apply(key, next);
+
+                        if (isFiltered) {
+                            next.dispose();
+                            itDisposable.remove();
+                        }
                     }
+                }
+
+                if (disposables.size() == 0) {
+                    it.remove();
                 }
             }
         }
