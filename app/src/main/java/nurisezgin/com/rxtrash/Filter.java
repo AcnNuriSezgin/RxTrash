@@ -28,5 +28,19 @@ public interface Filter {
         }
     }
 
+    class StartsWithFilter implements Filter {
+
+        private final String startsWith;
+
+        public StartsWithFilter(String startsWith) {
+            this.startsWith = startsWith;
+        }
+
+        @Override
+        public boolean apply(String tag, Disposable d) {
+            return tag.startsWith(startsWith);
+        }
+    }
+
 }
 

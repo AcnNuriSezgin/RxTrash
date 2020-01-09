@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import io.reactivex.disposables.Disposable;
@@ -86,6 +87,19 @@ public class RxTrashTest {
     }
 
     @Test
+    public void should_ClearDisposablesWithStartsWithFilterCorrect() {
+        final int expected = 0;
+
+        RxTrash instance = RxTrash.getInstance();
+        instance.add(TAG + "one", mockDisposable);
+        instance.clear(new Filter.StartsWithFilter(TAG));
+
+        int actual = instance.disposableMap.size();
+
+        assertThat(actual, is(expected));
+    }
+
+    @Test
     public void should_ClearUnusableDisposablesCorrect() {
         final String newTag = TAG + TAG;
 
@@ -96,6 +110,38 @@ public class RxTrashTest {
 
         RxTrash instance = RxTrash.getInstance();
         instance.add(newTag, mockDisposable);
+        instance.clear(new Filter.NameFilter(TAG));
+
+        int actual = instance.disposableMap.size();
+
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void should_KeepMoreThanOneDisposableWithSameTagCorrect() {
+        final int expected = 2;
+
+        RxTrash instance = RxTrash.getInstance();
+        instance.add(TAG, mockDisposable);
+
+        Disposable secondMockDisposable = Mockito.mock(Disposable.class);
+        instance.add(TAG, secondMockDisposable);
+
+        int actual = instance.disposableMap.get(TAG).size();
+
+        assertThat(actual, is(expected));
+    }
+
+    @Test
+    public void should_ClearCollectionOfDisposablesOnceCorrect() {
+        final int expected = 0;
+
+        RxTrash instance = RxTrash.getInstance();
+        instance.add(TAG, mockDisposable);
+
+        Disposable secondMockDisposable = Mockito.mock(Disposable.class);
+        instance.add(TAG, secondMockDisposable);
+
         instance.clear(new Filter.NameFilter(TAG));
 
         int actual = instance.disposableMap.size();
